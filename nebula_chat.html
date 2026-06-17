@@ -5,25 +5,46 @@
         <meta charset="UTF-8">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
         <title>Nebula Chat</title>
+        
+        <!-- Fonts -->
+        <link rel="preconnect" href="https://fonts.googleapis.com">
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+
         <script src="https://cdn.tailwindcss.com"></script>
         <script>
             tailwind.config = {
                 darkMode: 'class',
+                theme: {
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif'],
+                    }
+                }
             }
         </script>
         <script type="importmap">
-    {
-        "imports": {
-            "react": "https://esm.sh/react@18.2.0",
-            "react-dom/client": "https://esm.sh/react-dom@18.2.0/client",
-            "lucide-react": "https://esm.sh/lucide-react@0.292.0"
+        {
+            "imports": {
+                "react": "https://esm.sh/react@18.2.0",
+                "react-dom/client": "https://esm.sh/react-dom@18.2.0/client?external=react",
+                "lucide-react": "https://esm.sh/lucide-react@0.344.0?external=react"
+            }
         }
-    }
-    </script>
-        <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+        </script>
+        <script src="https://unpkg.com/@babel/standalone@7.23.6/babel.min.js"></script>
+        <style>
+            /* Custom Scrollbar */
+            ::-webkit-scrollbar { width: 6px; }
+            ::-webkit-scrollbar-track { background: transparent; }
+            ::-webkit-scrollbar-thumb { background: #334155; border-radius: 3px; }
+            body { 
+                -webkit-font-smoothing: antialiased;
+                -moz-osx-font-smoothing: grayscale;
+            }
+        </style>
     </head>
 
-    <body class="bg-slate-900 text-white transition-colors duration-300">
+    <body class="bg-[#0B1120] text-slate-100 transition-colors duration-300">
         <div id="root"></div>
 
         <script type="text/babel" data-type="module">
@@ -31,21 +52,21 @@
             import { createRoot } from 'react-dom/client';
             import {
                 MessageSquare, Send, Search, Phone, Video,
-                MoreHorizontal, Paperclip, Smile, CheckCheck
+                MoreHorizontal, Paperclip, Smile, Settings, Users
             } from 'lucide-react';
 
-            // --- MOCK CONTACTS ---
+            // MOCK CONTACTS
             const CONTACTS = [
-                { id: 1, name: "Team Alpha", lastMsg: "Meeting at 3 PM?", time: "2m", avatar: "bg-purple-500", active: true },
-                { id: 2, name: "Sarah Des", lastMsg: "Sent the files.", time: "1h", avatar: "bg-pink-500", active: false },
-                { id: 3, name: "Project X", lastMsg: "Deployed to staging.", time: "3h", avatar: "bg-indigo-500", active: false },
-                { id: 4, name: "Devine E.", lastMsg: "Hey there!", time: "1d", avatar: "bg-emerald-500", active: false },
+                { id: 1, name: "Team Alpha", lastMsg: "Meeting at 3 PM?", time: "2m", avatar: "bg-gradient-to-br from-indigo-500 to-purple-500", active: true },
+                { id: 2, name: "Sarah Des", lastMsg: "Sent the updated design files.", time: "1h", avatar: "bg-gradient-to-br from-pink-500 to-rose-500", active: false },
+                { id: 3, name: "Project X", lastMsg: "Deployed to staging environment.", time: "3h", avatar: "bg-gradient-to-br from-blue-500 to-cyan-500", active: false },
+                { id: 4, name: "Devine E.", lastMsg: "Hey there! Looking good.", time: "1d", avatar: "bg-gradient-to-br from-emerald-500 to-teal-500", active: false },
             ];
 
-            // --- INITIAL MESSAGES ---
+            // INITIAL MESSAGES
             const INITIAL_MESSAGES = [
                 { id: 1, sender: "them", text: "Hey! Have you checked the new designs?", time: "10:00 AM" },
-                { id: 2, sender: "me", text: "Yes, they look amazing! Especially the dark mode.", time: "10:02 AM" },
+                { id: 2, sender: "me", text: "Yes, they look amazing! Especially the dark mode aesthetic.", time: "10:02 AM" },
                 { id: 3, sender: "them", text: "Great! Let's ship it by Friday.", time: "10:05 AM" },
             ];
 
@@ -80,12 +101,12 @@
                         const replyMsg = {
                             id: Date.now() + 1,
                             sender: "them",
-                            text: "That sounds like a plan! 🚀",
+                            text: "That sounds like an excellent plan! 🚀 Let's sync up later today.",
                             time: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
                         };
                         setMessages(prev => [...prev, replyMsg]);
                         setIsTyping(false);
-                    }, 2000);
+                    }, 1500);
                 };
 
                 const handleKeyPress = (e) => {
@@ -93,73 +114,81 @@
                 };
 
                 return (
-                    <div className="h-screen flex bg-slate-900 overflow-hidden">
+                    <div className="h-screen flex bg-[#0B1120] overflow-hidden font-sans">
 
-                        {/* Sidebar */ }
-                        <div className="w-80 border-r border-slate-800 bg-slate-900 flex flex-col hidden md:flex">
-                            <div className="p-5 border-b border-slate-800">
-                                <div className="flex items-center gap-2 mb-6">
-                                    <div className="w-8 h-8 bg-gradient-to-tr from-cyan-500 to-blue-500 rounded-lg flex items-center justify-center">
-                                        <MessageSquare size={ 18 } className="text-white" />
+                        {/* Sidebar */}
+                        <div className="w-80 border-r border-slate-800/60 bg-slate-900/50 backdrop-blur-xl flex flex-col hidden md:flex relative z-20">
+                            <div className="p-6 border-b border-slate-800/60">
+                                <div className="flex items-center justify-between mb-6">
+                                    <div className="flex items-center gap-3">
+                                        <div className="w-10 h-10 bg-gradient-to-tr from-indigo-500 to-purple-600 rounded-xl flex items-center justify-center shadow-lg shadow-indigo-500/20">
+                                            <MessageSquare size={ 20 } className="text-white" />
+                                        </div>
+                                        <h1 className="font-extrabold text-2xl tracking-tight text-white">Nebula</h1>
                                     </div>
-                                    <h1 className="font-bold text-xl tracking-wide">Nebula</h1>
+                                    <div className="flex gap-2">
+                                        <button className="p-2 rounded-lg text-slate-400 hover:text-white hover:bg-slate-800 transition-colors"><Settings size={18} /></button>
+                                    </div>
                                 </div>
                                 <div className="relative">
-                                    <Search size={ 16 } className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-500" />
-                                    <input type="text" placeholder="Search..." className="w-full bg-slate-800 text-sm py-2 pl-10 pr-4 rounded-lg outline-none focus:ring-1 focus:ring-cyan-500 text-slate-200" />
+                                    <Search size={ 18 } className="absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-500" />
+                                    <input type="text" placeholder="Search conversations..." className="w-full bg-slate-950/50 border border-slate-800 text-sm font-medium py-2.5 pl-11 pr-4 rounded-xl outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent text-slate-200 transition-all placeholder-slate-500" />
                                 </div>
                             </div>
 
-                            <div className="flex-1 overflow-y-auto p-2 space-y-1">
+                            <div className="flex-1 overflow-y-auto p-3 space-y-1.5">
                                 { CONTACTS.map(contact => (
-                                    <div key={ contact.id } className={ `p-3 rounded-xl flex items-center gap-3 cursor-pointer transition-colors ${contact.active ? 'bg-slate-800' : 'hover:bg-slate-800/50'}` }>
-                                        <div className={ `w-10 h-10 rounded-full ${contact.avatar} flex items-center justify-center text-white font-bold text-sm` }>
+                                    <div key={ contact.id } className={ `p-4 rounded-2xl flex items-center gap-4 cursor-pointer transition-all duration-300 ${contact.active ? 'bg-slate-800 shadow-md border border-slate-700/50' : 'hover:bg-slate-800/50 border border-transparent'}` }>
+                                        <div className={ `w-12 h-12 rounded-2xl ${contact.avatar} flex items-center justify-center text-white font-bold text-lg shadow-inner` }>
                                             { contact.name.charAt(0) }
                                         </div>
                                         <div className="flex-1 min-w-0">
-                                            <div className="flex justify-between items-center mb-1">
-                                                <h4 className="font-semibold text-sm truncate">{ contact.name }</h4>
-                                                <span className="text-xs text-slate-500">{ contact.time }</span>
+                                            <div className="flex justify-between items-center mb-1.5">
+                                                <h4 className="font-bold text-[15px] text-white truncate">{ contact.name }</h4>
+                                                <span className={ `text-xs font-semibold ${contact.active ? 'text-indigo-400' : 'text-slate-500'}` }>{ contact.time }</span>
                                             </div>
-                                            <p className="text-xs text-slate-400 truncate">{ contact.lastMsg }</p>
+                                            <p className="text-sm text-slate-400 truncate font-medium">{ contact.lastMsg }</p>
                                         </div>
                                     </div>
                                 )) }
                             </div>
                         </div>
 
-                        {/* Chat Area */ }
-                        <div className="flex-1 flex flex-col bg-slate-950 relative">
+                        {/* Chat Area */}
+                        <div className="flex-1 flex flex-col bg-[#0B1120] relative">
+                            {/* Ambient Glow */}
+                            <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-96 h-96 bg-indigo-600/10 rounded-full blur-[100px] pointer-events-none"></div>
 
-                            {/* Header */ }
-                            <header className="h-16 border-b border-slate-800 flex items-center justify-between px-6 bg-slate-900/50 backdrop-blur-sm z-10">
-                                <div className="flex items-center gap-3">
-                                    <div className="w-10 h-10 rounded-full bg-purple-500 flex items-center justify-center font-bold">TA</div>
+                            {/* Header */}
+                            <header className="h-20 border-b border-slate-800/60 flex items-center justify-between px-8 bg-slate-900/30 backdrop-blur-xl z-10">
+                                <div className="flex items-center gap-4">
+                                    <div className="w-12 h-12 rounded-2xl bg-gradient-to-br from-indigo-500 to-purple-500 flex items-center justify-center font-bold text-lg shadow-lg">TA</div>
                                     <div>
-                                        <h3 className="font-bold text-sm">Team Alpha</h3>
-                                        <p className="text-xs text-green-400 flex items-center gap-1">
-                                            <span className="w-1.5 h-1.5 bg-green-400 rounded-full animate-pulse"></span> Online
+                                        <h3 className="font-extrabold text-lg text-white tracking-tight">Team Alpha</h3>
+                                        <p className="text-sm text-emerald-400 font-semibold flex items-center gap-2 mt-0.5">
+                                            <span className="w-2 h-2 bg-emerald-400 rounded-full animate-pulse shadow-[0_0_8px_rgba(52,211,153,0.8)]"></span> Online
                                         </p>
                                     </div>
                                 </div>
-                                <div className="flex items-center gap-4 text-slate-400">
-                                    <Phone size={ 20 } className="hover:text-white cursor-pointer" />
-                                    <Video size={ 20 } className="hover:text-white cursor-pointer" />
-                                    <MoreHorizontal size={ 20 } className="hover:text-white cursor-pointer" />
+                                <div className="flex items-center gap-3 text-slate-400">
+                                    <button className="p-2.5 hover:text-white hover:bg-slate-800 rounded-xl transition-colors"><Phone size={ 22 } /></button>
+                                    <button className="p-2.5 hover:text-white hover:bg-slate-800 rounded-xl transition-colors"><Video size={ 22 } /></button>
+                                    <button className="p-2.5 hover:text-white hover:bg-slate-800 rounded-xl transition-colors"><Users size={ 22 } /></button>
+                                    <button className="p-2.5 hover:text-white hover:bg-slate-800 rounded-xl transition-colors"><MoreHorizontal size={ 22 } /></button>
                                 </div>
                             </header>
 
-                            {/* Messages */ }
-                            <div className="flex-1 overflow-y-auto p-6 space-y-6">
+                            {/* Messages */}
+                            <div className="flex-1 overflow-y-auto p-8 space-y-8 z-10">
                                 { messages.map((msg) => (
                                     <div key={ msg.id } className={ `flex ${msg.sender === 'me' ? 'justify-end' : 'justify-start'}` }>
-                                        { msg.sender === 'them' && <div className="w-8 h-8 rounded-full bg-purple-500 flex-shrink-0 mr-2 self-end mb-1"></div> }
-                                        <div className={ `max-w-[70%] rounded-2xl px-5 py-3 shadow-sm relative group ${msg.sender === 'me'
-                                            ? 'bg-gradient-to-br from-cyan-500 to-blue-600 text-white rounded-tr-none'
-                                            : 'bg-slate-800 text-slate-100 rounded-tl-none'
+                                        { msg.sender === 'them' && <div className="w-10 h-10 rounded-2xl bg-gradient-to-br from-indigo-500 to-purple-500 flex-shrink-0 mr-4 self-end mb-1 shadow-md"></div> }
+                                        <div className={ `max-w-[70%] rounded-2xl px-6 py-4 shadow-md relative group ${msg.sender === 'me'
+                                            ? 'bg-gradient-to-br from-indigo-600 to-purple-600 text-white rounded-tr-sm shadow-indigo-500/20'
+                                            : 'bg-slate-800/80 backdrop-blur-sm border border-slate-700/50 text-slate-100 rounded-tl-sm'
                                             }` }>
-                                            <p className="text-sm leading-relaxed">{ msg.text }</p>
-                                            <span className={ `text-[10px] absolute bottom-1 ${msg.sender === 'me' ? 'left-2 text-blue-100' : 'right-2 text-slate-400'} opacity-0 group-hover:opacity-100 transition-opacity` }>
+                                            <p className="text-[15px] leading-relaxed font-medium">{ msg.text }</p>
+                                            <span className={ `text-[11px] font-semibold absolute -bottom-5 ${msg.sender === 'me' ? 'right-1 text-slate-500' : 'left-1 text-slate-500'} opacity-0 group-hover:opacity-100 transition-opacity` }>
                                                 { msg.time }
                                             </span>
                                         </div>
@@ -167,23 +196,23 @@
                                 )) }
 
                                 { isTyping && (
-                                    <div className="flex justify-start animate-pulse">
-                                        <div className="w-8 h-8 rounded-full bg-purple-500 flex-shrink-0 mr-2 self-end mb-1"></div>
-                                        <div className="bg-slate-800 px-4 py-3 rounded-2xl rounded-tl-none flex gap-1 items-center h-10">
-                                            <span className="w-1.5 h-1.5 bg-slate-400 rounded-full animate-bounce"></span>
-                                            <span className="w-1.5 h-1.5 bg-slate-400 rounded-full animate-bounce delay-75"></span>
-                                            <span className="w-1.5 h-1.5 bg-slate-400 rounded-full animate-bounce delay-150"></span>
+                                    <div className="flex justify-start items-end mb-4">
+                                        <div className="w-10 h-10 rounded-2xl bg-gradient-to-br from-indigo-500 to-purple-500 flex-shrink-0 mr-4 mb-1 shadow-md"></div>
+                                        <div className="bg-slate-800/80 backdrop-blur-sm border border-slate-700/50 px-5 py-4 rounded-2xl rounded-tl-sm flex gap-1.5 items-center h-12 shadow-sm">
+                                            <span className="w-2 h-2 bg-indigo-400 rounded-full animate-bounce"></span>
+                                            <span className="w-2 h-2 bg-purple-400 rounded-full animate-bounce" style={{ animationDelay: '0.15s' }}></span>
+                                            <span className="w-2 h-2 bg-pink-400 rounded-full animate-bounce" style={{ animationDelay: '0.3s' }}></span>
                                         </div>
                                     </div>
                                 ) }
-                                <div ref={ messagesEndRef } />
+                                <div ref={ messagesEndRef } className="h-4" />
                             </div>
 
-                            {/* Input Area */ }
-                            <div className="p-4 bg-slate-900 border-t border-slate-800">
-                                <div className="max-w-4xl mx-auto bg-slate-800 rounded-xl p-1.5 flex items-center gap-2">
-                                    <button className="p-2 text-slate-400 hover:text-white hover:bg-slate-700 rounded-lg transition-colors">
-                                        <Paperclip size={ 20 } />
+                            {/* Input Area */}
+                            <div className="p-6 bg-slate-900/50 backdrop-blur-xl border-t border-slate-800/60 z-10">
+                                <div className="max-w-5xl mx-auto bg-slate-800/80 border border-slate-700/50 rounded-2xl p-2 flex items-center gap-2 shadow-inner">
+                                    <button className="p-3 text-slate-400 hover:text-white hover:bg-slate-700/50 rounded-xl transition-colors">
+                                        <Paperclip size={ 22 } />
                                     </button>
                                     <input
                                         type="text"
@@ -191,19 +220,19 @@
                                         onChange={ (e) => setInputText(e.target.value) }
                                         onKeyPress={ handleKeyPress }
                                         placeholder="Type your message..."
-                                        className="flex-1 bg-transparent outline-none text-sm text-white placeholder-slate-500 px-2"
+                                        className="flex-1 bg-transparent outline-none text-[15px] font-medium text-white placeholder-slate-500 px-3"
                                     />
-                                    <button className="p-2 text-slate-400 hover:text-white hover:bg-slate-700 rounded-lg transition-colors">
-                                        <Smile size={ 20 } />
+                                    <button className="p-3 text-slate-400 hover:text-white hover:bg-slate-700/50 rounded-xl transition-colors">
+                                        <Smile size={ 22 } />
                                     </button>
                                     <button
                                         onClick={ handleSend }
-                                        className={ `p-2 rounded-lg transition-all ${inputText.trim() ? 'bg-cyan-500 text-white shadow-lg shadow-cyan-500/20' : 'bg-slate-700 text-slate-500 cursor-not-allowed'}` }
+                                        disabled={ !inputText.trim() }
+                                        className={ `p-3 rounded-xl transition-all duration-300 ${inputText.trim() ? 'bg-indigo-600 text-white shadow-lg shadow-indigo-500/30 hover:bg-indigo-500 transform hover:scale-105' : 'bg-slate-800 text-slate-600 cursor-not-allowed'}` }
                                     >
-                                        <Send size={ 18 } />
+                                        <Send size={ 20 } className={inputText.trim() ? "translate-x-0.5 -translate-y-0.5" : ""} />
                                     </button>
                                 </div>
-                                <p className="text-center text-xs text-slate-600 mt-3">Press Enter to send</p>
                             </div>
                         </div>
                     </div>
