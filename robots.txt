@@ -1,26 +1,4 @@
 User-agent: *
 Allow: /
 
-# GitHub Pages doesn't have these directories, but good to block anyway
-Disallow: /admin/
-Disallow: /private/
-Disallow: /tmp/
-Disallow: /cgi-bin/
-
-# Files (adjust based on what you actually have)
-Disallow: /*.php$
-Disallow: /*.py$
-Disallow: /*.sql$
-Disallow: /*.env$
-
-# Sitemap location
-Sitemap: https://devine99.github.io/sitemap.xml
-
-# Allow important assets
-Allow: /images/
-Allow: /css/
-Allow: /js/
-Allow: /assets/
-
-# Crawl delays (optional but good practice)
-Crawl-delay: 1
+Sitemap: https://devineenukorah.github.io/my-website/sitemap.xml
